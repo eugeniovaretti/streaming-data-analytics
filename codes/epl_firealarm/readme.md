@@ -128,7 +128,7 @@ group by sensor;
 
 visually
 
-![](img/Q1.jpg)
+![](img/Q1.png)
 
 Execution mode
 
