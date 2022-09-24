@@ -74,6 +74,10 @@ t=t.plus(4 seconds)
 t=t.plus(4 seconds)
 ```
 
+visually
+
+![](img/time-line.png)
+
 ### let's explore the EPL syntax by example
 
 #### Q0
@@ -89,6 +93,13 @@ from TemperatureSensorEvent
 where temperature > 50;
 ```
 
+visually
+
+![](img/Q0.png)
+
+Execution mode: Data points enter the query that filters them  
+
+
 ##### The Event-Based System Style
 
 ```
@@ -96,6 +107,13 @@ where temperature > 50;
 select *
 from TemperatureSensorEvent(temperature > 50) ;
 ```
+
+visually
+
+![](img/Q0bis.png)
+
+Execution mode: data points are filtered before flowing into the query and the query execution does not get triggered
+
 
 #### Q1
 the average of all the temperature observations for each sensor up to the last event received
@@ -108,12 +126,17 @@ from TemperatureSensorEvent
 group by sensor;
 ```
 
-about the incremental computation of the avg
+visually
 
-![](img/black-board.jpg)
+![](img/Q1.jpg)
+
+Execution mode
+
+* From a logical perspective, data points cumulate in the landmark window, and the query emits a new avg for every data point
+* From a physical perspective, the query is evaluated incrementally and maintains a state that captures the number of events (cnt) seen so far and the previous avg. The new average only depends on the state and the new data point entering the query. Old data can be forgotten.
+
 
 Not all the algorithms can be converted to a streaming one, e.g., there is not **an exact** way to compute the standard deviation in a streaming algorithm. However, there is an [approximate streaming algorithm for the standard deviation](https://math.stackexchange.com/questions/198336/how-to-calculate-standard-deviation-with-streaming-inputs) that **assumes** the stationarity of the observed process.
-
 
 NOTE: even if you cannot read it in the syntax, a *landmark window* opens when the stream starts (or when you register the query in esper) and keeps widening. As a side note, the *logical unbounded table* assumed by spark is a landmark window, so the two words are synonyms. 
 
