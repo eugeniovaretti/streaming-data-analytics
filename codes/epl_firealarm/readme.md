@@ -156,7 +156,7 @@ group by sensor;
 
 I am elaborating more on Q2 (landmark window) and the difference with Q3 (sliding window).
 
-![](img/EPL07.png)
+![](img/EPL07.jpg)
 
 
 #### Q3
@@ -192,7 +192,7 @@ group by sensor;
 
 #### Q3 vs. Q4 vs. Q4
 
-![](./img/EPL08.png)
+![](./img/EPL08.jpg)
 
 #### Q6
 the average temperature of the last 4 seconds every 2 seconds (a.k.a. **logical hopping window**)
