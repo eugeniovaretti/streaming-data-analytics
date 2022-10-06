@@ -228,7 +228,7 @@ TreeToPickTomatoesFrom = {treeID = 2, type = 'yellow', pick_start = 3, pick_end 
 t=t.plus(20 seconds)
 
 
-DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 20}
+DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 30}
 
 
 t = t.plus(20 seconds)
@@ -240,9 +240,11 @@ DronePicking = {droneID = 1, servicedTreeID = 1, timestamp = 41} // out of time 
 t=t.plus(20 seconds) 
 
 
-TreeToPickTomatoesFrom = {treeID = 1, type = 'cherry', pick_start = 50, pick_end = 100}
+TreeToPickTomatoesFrom = {treeID = 1, type = 'cherry', pick_start = 50, pick_end = 80}
 
 DronePicking = {droneID = 1, servicedTreeID = 1, timestamp = 51}
+
+t=t.plus(40 seconds)
 
 DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 71} // out of time pick
 
@@ -250,7 +252,7 @@ DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 71} // out of time 
 t=t.plus(5 minutes)
 
 
-DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 72} // out of time pick
+DronePicking = {droneID = 2, servicedTreeID = 2, timestamp = 80} // out of time pick
 
 
 t=t.plus(20 seconds)
