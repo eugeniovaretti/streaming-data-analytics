@@ -126,7 +126,7 @@ The output **all** clause is used to show all of the elements of the counting ta
 Let's try to change the data generation schema, using the following one: 
 
 ```  
-TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry', pick_start = 1, pick_end = 40}
+TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry'}
 
 
 t=t.plus(20 seconds)
@@ -134,7 +134,7 @@ t=t.plus(20 seconds)
 
 DronePicking = {droneID = 1, servicedTreeID = 1}
 
-TreeToPickTomatoesFrom = {treeID = 2 , type = 'yellow', pick_start = 3, pick_end = 70}
+TreeToPickTomatoesFrom = {treeID = 2 , type = 'yellow'}
 
 
 t=t.plus(20 seconds)
@@ -152,7 +152,7 @@ DronePicking = {droneID = 1, servicedTreeID = 1}
 t=t.plus(20 seconds) 
 
 
-TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry', pick_start = 50, pick_end = 100}
+TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry'}
 
 DronePicking = {droneID = 1, servicedTreeID = 1}
 
