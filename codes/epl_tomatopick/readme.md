@@ -126,43 +126,43 @@ The output **all** clause is used to show all of the elements of the counting ta
 Let's try to change the data generation schema, using the following one: 
 
 ```  
-TreeToPickTomatoesFrom = {treeID = 1 , position = 'A1', type = 'cherry', pick_start = 1, pick_end = 40}
+TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry', pick_start = 1, pick_end = 40}
 
 
 t=t.plus(20 seconds)
 
 
-DronePicking = {droneID = 1, servicedTreeID = 1, position = 'A1'}
+DronePicking = {droneID = 1, servicedTreeID = 1}
 
-TreeToPickTomatoesFrom = {treeID = 2 , position = 'B2', type = 'yellow', pick_start = 3, pick_end = 70}
+TreeToPickTomatoesFrom = {treeID = 2 , type = 'yellow', pick_start = 3, pick_end = 70}
 
 
 t=t.plus(20 seconds)
 
 
-DronePicking = {droneID = 2, servicedTreeID = 2, position = 'A1'}
+DronePicking = {droneID = 2, servicedTreeID = 2}
 
 
 t = t.plus(20 seconds)
 
 
-DronePicking = {droneID = 1, servicedTreeID = 1, position = 'A1'}
+DronePicking = {droneID = 1, servicedTreeID = 1}
 
 
 t=t.plus(20 seconds) 
 
 
-TreeToPickTomatoesFrom = {treeID = 1 , position = 'A1', type = 'cherry', pick_start = 50, pick_end = 100}
+TreeToPickTomatoesFrom = {treeID = 1 , type = 'cherry', pick_start = 50, pick_end = 100}
 
-DronePicking = {droneID = 1, servicedTreeID = 1, position = 'A1'}
+DronePicking = {droneID = 1, servicedTreeID = 1}
 
-DronePicking = {droneID = 2, servicedTreeID = 2, position = 'B2'}
+DronePicking = {droneID = 2, servicedTreeID = 2}
 
 
 t=t.plus(5 minutes)
 
 
-DronePicking = {droneID = 2, servicedTreeID = 2, position = 'B2'}
+DronePicking = {droneID = 2, servicedTreeID = 2}
 
 
 t=t.plus(20 seconds)
