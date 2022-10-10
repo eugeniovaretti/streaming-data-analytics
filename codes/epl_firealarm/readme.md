@@ -118,7 +118,7 @@ the average of all the temperature observations for each sensor up to the last e
 @Name('Q1')
 select sensor, avg(temperature)
 from TemperatureSensorEvent
-group by the sensor;
+group by sensor;
 ```
 
 visually
@@ -144,7 +144,7 @@ Assumption: the average should change as soon as they receive a new event
 @Name('Q2')
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:time(4 seconds)
-group by the sensor;
+group by sensor;
 ```
 
 #### Q1's vs. Q2's results 
@@ -162,7 +162,7 @@ the average temperature of the last 4 seconds every 4 seconds (a.k.a. **logical 
 @Name('Q3')
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:time_batch(4 seconds)
-group by the sensor;
+group by sensor;
 ```
 
 #### Q4
@@ -172,7 +172,7 @@ the moving average of the last 4 temperature events (a.k.a. **physical sliding w
 @Name('Q4')
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:length(4)
-group by the sensor;
+group by sensor;
 ```
 
 #### Q5
@@ -182,7 +182,7 @@ the moving average of the last 4 temperature events every 4 events (a.k.a. **phy
 @Name('Q5')
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:length_batch(4)
-group by the sensor;
+group by sensor;
 ```
 
 #### Q3 vs. Q4 vs. Q4
@@ -197,7 +197,7 @@ the average temperature of the last 4 seconds every 2 seconds (a.k.a. **logical 
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:time(4 seconds)
 group by sensor
-output lasts every 2 seconds;
+output last every 2 seconds;
 ```
 
 #### Deep dive into the reporting policy specified by the `output ... every` clause
@@ -221,7 +221,7 @@ Let's see the different behavior of the following queries.
 @Name('Q2')
 select sensor, avg(temperature)
 from TemperatureSensorEvent.win:time(4 seconds)
-group by the sensor;
+group by sensor;
 
 @Name('Q2.first')
 select sensor, avg(temperature)
