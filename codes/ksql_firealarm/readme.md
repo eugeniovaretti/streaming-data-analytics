@@ -25,7 +25,7 @@ SET 'auto.offset.reset' = 'earliest';
 
 ### Let's explore ksqlDB by example
 
-Please refer to [continuous-analytics-examples/epl_firealarm/readme.md](https://github.com/quantiaconsulting/continuous-analytics-examples/blob/master/epl_firealarm/readme.md) for the EPL version of the following queries.
+Please refer to [../epl_firealarm/readme.md](https://github.com/quantiaconsulting/continuous-analytics-examples/blob/master/epl_firealarm/readme.md) for the EPL version of the following queries.
 
 
 #### Let's create the Kstreams ontop of Kafka topics
@@ -575,8 +575,8 @@ returns
 
 In the folder `../datagen` you find two notebooks to send them smoke and temperature events programmatically:
 
-* Run the code in [../datagen/smoke_sensor_simulator.ipynb](https://github.com/quantiaconsulting/continuous-analytics-examples/blob/master/ksql_firealarm/datagen/smoke_sensor_simulator.ipynb) to simulate the smoke events.
-* Run the code in [../datagen/temperature_sensor_simulator.ipynb](https://github.com/quantiaconsulting/continuous-analytics-examples/blob/master/ksql_firealarm/datagen/temperature_sensor_simulator.ipynb) to simulate the temperature events.
+* Run the code in [../datagen/smoke_sensor_simulator.ipynb](../datagen/smoke_sensor_simulator.ipynb) to simulate the smoke events.
+* Run the code in [../datagen/temperature_sensor_simulator.ipynb](../datagen/temperature_sensor_simulator.ipynb) to simulate the temperature events.
 
 They two notebooks use [ksql-python](https://github.com/bryanyang0528/ksql-python), a python wrapper for the KSQL REST API. As you can see, it allows for easily interact with the KSQL REST API using a python library.
 
