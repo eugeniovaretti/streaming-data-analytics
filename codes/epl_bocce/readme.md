@@ -373,7 +373,7 @@ t=t.plus(10 seconds)
 
 We can know the player who is currently leading the game
 
-
+```
 @Name("Q4_supp")
 INSERT INTO temp
 SELECT min(distance) as mindist
@@ -384,6 +384,7 @@ SELECT playerID, number, distance
 FROM Boccia.win:length(1) as B, temp.win:length(1) as T
 WHERE B.distance = T.mindist
 ;
+```
 
 Eventually, you can insert this last event into another schema that records the points of the rounds and selects the winner at the end of the game.
 
