@@ -7,11 +7,11 @@
 
 ## The problem
 
-> We want to monitor a Bocce game for two players. Bocce is a famous Italian game played with eight metal balls (called bocce, singular boccia) on a smooth, prepared court. The game also requires a smaller target ball, known as the boccino. The player who starts the game throws the boccino and one of his boccia, aiming to get it as close to the boccino as possible. The opposing player then tries to throw his boccia closer to the boccino or knock the opponent's boccia away. The player further from the boccino continues the game.
+> We want to monitor a Bocce game for two players. Bocce is a famous Italian game played with eight metal balls (called bocce, singular boccia) on a smooth, prepared court. The game also requires a smaller target ball, known as the boccino. The player who starts the game throws the boccino and one of his boccia, aiming to get it as close to the boccino as possible. The opposing player then tries to throw his boccia closer to the boccino or knock the opponent's boccia away.
 
 > In the Bocce game, once the players have thrown all bocce, the round ends, and the scoring is determined. The player with the boccia closest to the boccino earns points. He receives one point for each boccia closer to the boccino than his opponent's closest boccia to the boccino.
 
-> Suppose a camera mounted above the court can detect when a round starts (i.e., the boccino is the only ball on the court. Morevoer, whenever a player throws a boccia, it waits for all the bocce to stop, and then, for each moved boccia, it tells the position in the court and how far it is from the boccino.
+> Suppose a camera mounted above the court can detect when a round starts (i.e., the boccino is the only ball on the court). Morevoer, whenever a player throws a boccia, it waits for all the bocce to stop, and then, for each moved boccia, it tells the position in the court and how far it is from the boccino.
 
 ### Modeling
 > Formalize the schema of one or more streams necessary to perform the query in EPL.
