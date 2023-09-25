@@ -20,31 +20,23 @@ Reading the description carefully it is possible to derive the following schemas
 ```  
 create schema Boccia(
     playerID int,
-    numero int,
-    distance double,
+    number int,
+    distance double, 
     status string
-);
-
-create schema Player(
-    playerID int, // can be sostituted by teamID if #members for each team is > 1
-    name string
-    // other informations about each player
 );
 
 create schema Boccino(
     round int,
-    distance double //represents the distance from the bowling line (not necessary)
 );
 ```
 
-An instance of the **Player** stream defines the players in the game (it is not mandatory but it could be useful if we want to store players' informations)
-An instance of the **Boccia** stream is issued once a certain Boccia is thrown or is moving.
+An instance of the **Boccia** stream is issued once a certain Boccia stops moving after being thrown or hit by another Boccia.
 An instance of **Boccino** stream is issued when every round starts.
 
 ### Assumptions
 Before delving into the problem it is better to define some assumptions to better model the data stream and the queries:
 
-- An instance of the Boccia type will only be thrown if the same Boccia has moved (either thrown by the player or hit by other bocce). The status of the Boccia represents this: status = "thrown" if the boccia is thrown, status = "moving" if the boccia is hit.
+- An instance of the Boccia type will only be thrown if the same Boccia has moved (either thrown by the player or hit by other bocce). The status of the Boccia represents this: status = "thrown" if the boccia is thrown, status = "hit" if the boccia is hit.
 
 - Between one throw of the boccia and another, 10 seconds pass, and the total duration of the game is 80 seconds
 
@@ -52,44 +44,40 @@ Before delving into the problem it is better to define some assumptions to bette
 In order to test the queries that will be later presented we will use the following data stream. It is suggested to modify it using different configurations to test wether your queries will work in different settings.
 
 ``` 
-/*
-Player = {playerID = 1, name = 'Marco'}
-Player = {playerID = 2, name = 'Giorgia'}
-*/
 
-Boccino = {round = 1, distance = 7}
+Boccino = {round = 1}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero=1, distance=2, status = "throw"}
+Boccia = {playerID = 1, number=1, distance=2, status = "thrown"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=1, distance=3, status = "throw"}
+Boccia = {playerID = 2, number=1, distance=3, status = "thrown"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero = 2, distance = 3, status = "throw"}
-Boccia = {playerID = 1, numero = 1, distance = 1.5, status = "moving"}
-Boccia = {playerID = 2, numero = 1, distance = 5, status = "moving"}
+Boccia = {playerID = 1, number = 2, distance = 3, status = "thrown"}
+Boccia = {playerID = 1, number = 1, distance = 1.5, status = "hit"}
+Boccia = {playerID = 2, number = 1, distance = 5, status = "hit"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=2, distance=0.5, status = "throw"}
-Boccia = {playerID = 1, numero = 1, distance = 3.5, status = "moving"}
+Boccia = {playerID = 2, number=2, distance=0.5, status = "thrown"}
+Boccia = {playerID = 1, number = 1, distance = 3.5, status = "hit"}
 
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=3, distance=2, status = "throw"}
+Boccia = {playerID = 1, number=3, distance=2, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=3, distance=5, status = "throw"}
+Boccia = {playerID = 2, number=3, distance=5, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=4, distance=7, status = "throw"}
+Boccia = {playerID = 1, number=4, distance=7, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=4, distance=8, status = "throw"}
+Boccia = {playerID = 2, number=4, distance=8, status = "thrown"}
 
 t=t.plus(10 seconds)
 
@@ -108,7 +96,7 @@ SELECT COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-every B = Boccia(B.status="throw")
+every B = Boccia(B.status="thrown")
 ];
 ```
 
@@ -118,7 +106,7 @@ SELECT B.playerID as playerID, COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-every B = Boccia(B.status="throw")
+every B = Boccia(B.status="thrown")
 ]
 GROUP BY B.playerID
 ;
@@ -127,52 +115,47 @@ GROUP BY B.playerID
 But what happens if the data stream admits multiple rounds? 
 
 ``` 
-/*
-Player = {playerID = 1, name = 'Marco'}
-Player = {playerID = 2, name = 'Giorgia'}
-*/
-
-Boccino = {round = 1, distance = 7}
+Boccino = {round = 1}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero=1, distance=2, status = "throw"}
+Boccia = {playerID = 1, number=1, distance=2, status = "thrown"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=1, distance=3, status = "throw"}
+Boccia = {playerID = 2, number=1, distance=3, status = "thrown"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero = 2, distance = 3, status = "throw"}
-Boccia = {playerID = 1, numero = 1, distance = 1.5, status = "moving"}
-Boccia = {playerID = 2, numero = 1, distance = 5, status = "moving"}
+Boccia = {playerID = 1, number = 2, distance = 3, status = "thrown"}
+Boccia = {playerID = 1, number = 1, distance = 1.5, status = "hit"}
+Boccia = {playerID = 2, number = 1, distance = 5, status = "hit"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=2, distance=0.5, status = "throw"}
-Boccia = {playerID = 1, numero = 1, distance = 3.5, status = "moving"}
+Boccia = {playerID = 2, number=2, distance=0.5, status = "thrown"}
+Boccia = {playerID = 1, number = 1, distance = 3.5, status = "hit"}
 
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=3, distance=2, status = "throw"}
+Boccia = {playerID = 1, number=3, distance=2, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=3, distance=5, status = "throw"}
+Boccia = {playerID = 2, number=3, distance=5, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=4, distance=7, status = "throw"}
+Boccia = {playerID = 1, number=4, distance=7, status = "thrown"}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=4, distance=8, status = "throw"}
-
-t=t.plus(10 seconds)
-
-Boccino = {round = 2, distance = 5}
+Boccia = {playerID = 2, number=4, distance=8, status = "thrown"}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero=1, distance=3, status = "throw"}
+Boccino = {round = 2}
+
+t=t.plus(10 seconds)
+
+Boccia = {playerID = 1, number=1, distance=3, status = "thrown"}
 
 t=t.plus(10 seconds)
 
@@ -183,16 +166,16 @@ t=t.plus(10 seconds)
 The clause _every b -> every B_ matches an event _everytime_ we have an event Boccino followed by an event Boccia (thrown). Hence, the event Boccino(round=1) will match also the event Boccia(playerID = 1) of the second round. The solution to this problem can be modelled in different ways, e.g.:
 
 ```  
-@Name('Q1')
+@Name('Q1_new')
 SELECT COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-every B = Boccia(B.status="throw")
+every B = Boccia(B.status="thrown")
 and not b2 = Boccino()
 ];
 ```
-or, knowing that each round lasts 80 seconds:
+or, knowing that each round lasts max 80 seconds:
 
 ```  
 @Name('Q1_time')
@@ -200,21 +183,21 @@ SELECT COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-(every B = Boccia(B.status="throw")
+(every B = Boccia(B.status="thrown")
 where timer:within(80 seconds))
 ];
 ```
 
 
-/* Da fare a casa
+/* Homework
 ```  
-@Name('Q1bis_time')
+@Name('Q1bis_new')
 SELECT B.playerID as playerID, COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-(every B = Boccia(B.status="throw")
-where timer:within(80 seconds))
+(every B = Boccia(B.status="thrown")
+and not b2 = Boccino())
 ]
 GROUP BY B.playerID
 ;
@@ -241,38 +224,11 @@ SELECT b.round as round, COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-every B = Boccia(B.status="throw")
+every B = Boccia(B.status="thrown")
 and not b2 = Boccino()
-];
-GROUP BY b.round
+]
+GROUP BY b.round;
 ```
-
-Alternatively, you can use sliding logical windows using a support scheme: (PERCHE' NON FUNZIONA??)
-
-/*
-```
-create schema BoccePerRound(
-round int
-);
-```
-
-```  
-@Name('Q2_support')
-INSERT INTO BoccePerRound
-SELECT b.round as round
-FROM pattern[
-every b = Boccino() 
--> 
-(every B = Boccia(B.status="throw")
-where timer:within(80 seconds)) 
-];
-
-@Name('Q2')
-SELECT round, COUNT(*)
-FROM BoccePerRound.win:time(80 seconds);
-
-```
-*/
 
 Try to solve Q2-Bis by yourself...
 
@@ -283,7 +239,7 @@ SELECT b.round as round, COUNT(*)
 FROM pattern[
 every b = Boccino() 
 -> 
-every B = Boccia(B.status="throw")
+every B = Boccia(B.status="thrown")
 and not b2 = Boccino()
 ]
 GROUP BY b.round
@@ -292,8 +248,8 @@ HAVING b.round = 2;
 
 
 ### Assignment
-//> Q3-easy) State the average distance from the Boccino for the last two Bocce:
-> Q3) State the average distance from the Boccino for the last two  _thrown_ Bocce:
+//> Q3-easy) State the average distance from the Boccino for the last three Bocce:
+> Q3) State the average distance from the Boccino for the last three  _thrown_ Bocce:
 
 
 ### Solution
@@ -301,43 +257,43 @@ HAVING b.round = 2;
 ```
 create schema ThrownBoccia(
     playerID int,
-    numero int,
+    number int,
     distance double
 );
 
 @Name('Q3_support')
 INSERT INTO ThrownBoccia
-SELECT playerID, numero, distance
+SELECT playerID, number, distance
 FROM Boccia
-WHERE status="throw"; // funziona anche HAVING 
+WHERE status="thrown"; 
 
 @Name('Q3')
 SELECT AVG(distance)
-FROM ThrownBoccia.win:length(2)
+FROM ThrownBoccia.win:length(3)
 ```
 **Note**: Since the text does not specify "in the current round", the above is the correct solution. An alternative rational solution could have been:
 ```
 create schema ThrownBocciaAlt(
     playerID int,
-    numero int,
+    number int,
     distance double,
     round int
 );
 
 @Name('Q3_support_alt')
 INSERT INTO ThrownBocciaAlt
-SELECT B.playerID as playerID, B.numero as numero, B.distance as distance, b.round as round
+SELECT B.playerID as playerID, B.number as number, B.distance as distance, b.round as round
 FROM pattern[
     every b = Boccino()
     ->
     every B = Boccia()
     and not b2 = Boccino
 ]
-WHERE B.status="throw"; 
+WHERE B.status="thrown"; 
 
 @Name('Q3_alt')
 SELECT round, AVG(distance)
-FROM ThrownBocciaAlt.win:length(2)
+FROM ThrownBocciaAlt.win:length(3)
 GROUP BY round
 ```
 
@@ -352,7 +308,7 @@ In order to meet this requirement, we need to associate a time stamp with the ev
 ```  
 create schema Boccia(
 playerID int,
-numero int,
+number int,
 distance double,
 status string,
 timestamp int
@@ -360,148 +316,102 @@ timestamp int
 
 create schema Boccino(
     round int,
-    distance double, //represents the distance from the bowling line (not necessary)
     timestamp int
 )
 
-/*
-create schema Player(
-playerID int,
-name string
-);
-*/
-
 ```
-/*
-Player = {playerID = 1, name = 'Marco'}
-Player = {playerID = 2, name = 'Giorgia'}
-*/
-Boccino = {round = 1, distance = 7, timestamp = 0}
+
+Boccino = {round = 1, timestamp = 0}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero=1, distance=2, status = "throw", timestamp = 10}
+Boccia = {playerID = 1, number=1, distance=2, status = "thrown", timestamp = 10}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=1, distance=3, status = "throw", timestamp = 20}
+Boccia = {playerID = 2, number=1, distance=3, status = "thrown", timestamp = 20}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero = 2, distance = 3, status = "throw", timestamp = 30}
-Boccia = {playerID = 1, numero = 1, distance = 1.5, status = "moving", timestamp = 30}
-Boccia = {playerID = 2, numero = 1, distance = 5, status = "moving", timestamp = 30}
+Boccia = {playerID = 1, number = 2, distance = 3, status = "thrown", timestamp = 30}
+Boccia = {playerID = 1, number = 1, distance = 1.5, status = "hit", timestamp = 30}
+Boccia = {playerID = 2, number = 1, distance = 5, status = "hit", timestamp = 30}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 2, numero=2, distance=0.5, status = "throw", timestamp = 40}
-Boccia = {playerID = 1, numero = 1, distance = 3.5, status = "moving", timestamp = 40}
+Boccia = {playerID = 2, number=2, distance=0.5, status = "thrown", timestamp = 40}
+Boccia = {playerID = 1, number = 1, distance = 3.5, status = "hit", timestamp = 40}
 
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=3, distance=2, status = "throw", timestamp = 50}
+Boccia = {playerID = 1, number=3, distance=2, status = "thrown", timestamp = 50}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=3, distance=5, status = "throw", timestamp = 60}
-Boccia = {playerID = 2, numero = 1, distance = 1, status = "moving", timestamp = 60}
+Boccia = {playerID = 2, number=3, distance=5, status = "thrown", timestamp = 60}
+Boccia = {playerID = 2, number = 1, distance = 1, status = "hit", timestamp = 60}
 
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 1, numero=4, distance=7, status = "throw", timestamp = 70}
+Boccia = {playerID = 1, number=4, distance=7, status = "thrown", timestamp = 70}
 
 t=t.plus(10 seconds)
-Boccia = {playerID = 2, numero=4, distance=4, status = "throw", timestamp = 80}
-Boccia = {playerID = 1, numero = 3, distance = 0.5, status = "moving", timestamp = 80}
+Boccia = {playerID = 2, number=4, distance=4, status = "thrown", timestamp = 80}
+Boccia = {playerID = 1, number = 3, distance = 0.5, status = "hit", timestamp = 80}
 
 
 t=t.plus(10 seconds)
 
-Boccino = {round = 2, distance = 5, timestamp = 90}
+Boccino = {round = 2, timestamp = 90}
 
 t=t.plus(10 seconds)
 
-Boccia = {playerID = 1, numero=1, distance=3, status = "throw", timestamp = 100}
+Boccia = {playerID = 1, number=1, distance=3, status = "thrown", timestamp = 100}
 
 t=t.plus(10 seconds)
 
 ```
-Respecting the assumption of a round duration of 10 seconds (thus, 80 seconds per game), we can verify which boccia is closest to the Boccino.
 
-```
-create schema FinalPos(
-    playerID int,
-    numero int,
-    distance double
-);
+We can know the player who is currently leading the game
 
-@Name('Q4support')
-INSERT INTO FinalPos
-SELECT playerID, numero, distance
-FROM Boccia.win:time_batch(80 seconds)
-GROUP BY playerID, numero
-HAVING timestamp = max(timestamp)
-OUTPUT EVERY 10 seconds
+
+@Name("Q4_supp")
+INSERT INTO temp
+SELECT min(distance) as mindist
+FROM Boccia#rank(playerID,  number, 8, timestamp desc);
+
+@Name("Q4")
+SELECT playerID, number, distance
+FROM Boccia.win:length(1) as B, temp.win:length(1) as T
+WHERE B.distance = T.mindist
 ;
-
-@Name('Q4')
-SELECT playerID, numero
-FROM FinalPos.win:length_batch(8) //questa finestra è necessaria, altrimenti viene outputtato il minimo "a cascata" (output last non funziona).
-HAVING distance = min(distance)
-;
-```
 
 Eventually, you can insert this last event into another schema that records the points of the rounds and selects the winner at the end of the game.
 
 
 
-
-/// DA QUA NON FEASIBLE SECONDO ME
-We can also know the player who is currently leading the game
+/*
+Respecting the assumption of a round duration of 10 seconds (thus, 80 seconds per game), we can verify which boccia is closest to the Boccino.
 
 ```
-create schema Pos(
+create schema FinalPos(
     playerID int,
-    numero int,
-    distance double,
-timestamp int
-);
-
-create schema LastPos(
-    playerID int,
-    numero int,
+    number int,
     distance double
 );
 
 @Name('Q4support')
-INSERT INTO LastPos
-SELECT B.playerID as playerID, B.numero as numero, B.distance as distance, B.timestep as timestep
-FROM pattern[
-    every b = Boccino()
-    ->
-    every B = Boccia()
-    and not b2 = Boccino()
-]
-;
-
-@Name('Q4-BIS)
-SELECT
-FROM LastPos.win:time_batch(80 seconds)
-OUTPUT every(10 seconds)
-
-```
-// OPPURE
-@Name('Q4support')
 INSERT INTO FinalPos
-SELECT playerID, numero, distance
-FROM Boccia.win:time(80 seconds)
-GROUP BY playerID, numero
+SELECT playerID, number, distance
+FROM Boccia.win:time_batch(80 seconds)
+GROUP BY playerID, number
 HAVING timestamp = max(timestamp)
+OUTPUT EVERY 10 seconds
 ;
 
 @Name('Q4')
-SELECT playerID, numero, distance
-FROM FinalPos
+SELECT playerID, number, distance
+FROM FinalPos.win:length_batch(8) //questa finestra è necessaria, altrimenti viene outputtato il minimo "a cascata" (output last non funziona).
 HAVING distance = min(distance)
 ;
-
-viene outputttato un evento se il minimo cambia!
+```
+*/
