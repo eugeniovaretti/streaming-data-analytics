@@ -1,4 +1,4 @@
-## every clause and the guard patterns
+## every clause and the pattern guards
 
 ### preliminaries
 
