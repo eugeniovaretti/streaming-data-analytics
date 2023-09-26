@@ -354,7 +354,7 @@ t=t.plus(10 seconds)
 
 ```
 
-Under the *unrealistic* assumption of a round duration of 10 seconds (thus, 80 seconds per game), we can verify which boccia is closest to the Boccino with the following query:
+Under the *unrealistic* assumption of a Boccia thrown every 10 seconds (thus, 80 seconds per round), we can verify which boccia is closest to the Boccino with the following query:
 
 ```
 create schema FinalPos(
